@@ -109,11 +109,13 @@ function init() {
   const icons = getIconsDb();
   const colors = getColors();
   const types = getTypes(icons);
-  console.log(types);
 
-  console.log(colors);
-  // 1. MOSTRIAMO GLI ELEMENTI NELLA PAGINA
-  print(icons);
+  // COLORIAMO LE Icons
+  const coloredIcons = colorIcons(icons,types,colors);
+  console.log (coloredIcons);
+
+  // 2. MOSTRIAMO GLI ELEMENTI NELLA PAGINA
+  print(coloredIcons);
 }
 
 function print(array) {
@@ -122,7 +124,7 @@ function print(array) {
   array.forEach((item) => {
     const iconHtml = `
     <div>
-    <i class="${item.family} ${item.prefix}${item.name}" style="color:blue"></i>
+    <i class="${item.family} ${item.prefix}${item.name}" style="color:${item.color}"></i>
     <div class="title">${item.name.toUpperCase()}</div>
     </div>
     `;
@@ -135,10 +137,25 @@ function getTypes(array) {
   const types =[];
   array.forEach((item) => {
     if(!types.includes(item.type)) {
-    types.push(item.type);
-  }
+      types.push(item.type);
+    }
   });
   return types;
+}
+
+function colorIcons(array,types,colors) {
+
+  const newArray = array.map(item => {
+    // preliamo tipologia
+    const iconType = item.type;
+    // preleviamo index
+    const indexType = types.indexOf(iconType);
+    // aggiungiamo color all'item in base all'indice
+    const color = colors[indexType];
+    item.color = color;
+    return item;
+  });
+  return newArray;
 }
 
 $(init);
