@@ -105,6 +105,7 @@ function getColors() {
 }
 
 function init() {
+
   // 0. Preleviamo i dati
   const icons = getIconsDb();
   const colors = getColors();
@@ -116,11 +117,32 @@ function init() {
 
   // 2. MOSTRIAMO GLI ELEMENTI NELLA PAGINA
   print(coloredIcons);
+
+  // 3. AGGIUNGIAMO LE OPZIONI AL SELECT
+  addOptions(types);
+
+  // 4. LISTENER AL SELECT PER FILTRARE
+  const select = $("#type");
+  select.change(function(event){
+    const currentType = $(this).val();
+
+    if (types.includes(currentType)) {
+
+    // filter array attivo
+    const filteredIcons = filterArray(coloredIcons,currentType);
+    console.log(filteredIcons);
+    print(filteredIcons);
+  } else {
+    print(coloredIcons);
+  }
+  });
 }
+
 
 function print(array) {
   // MOSTRIAMO GLI ELEMENTI NELLA PAGINA
   const container = $(".icons");
+  container.html("");
   array.forEach((item) => {
     const iconHtml = `
     <div>
@@ -133,7 +155,6 @@ function print(array) {
 }
 
 function getTypes(array) {
-
   const types =[];
   array.forEach((item) => {
     if(!types.includes(item.type)) {
@@ -143,8 +164,8 @@ function getTypes(array) {
   return types;
 }
 
-function colorIcons(array,types,colors) {
 
+function colorIcons(array,types,colors) {
   const newArray = array.map(item => {
     // preliamo tipologia
     const iconType = item.type;
@@ -157,5 +178,28 @@ function colorIcons(array,types,colors) {
   });
   return newArray;
 }
+
+
+function addOptions(types) {
+  const select = $('#type');
+  types.forEach(item => {
+    const optionHtml = `
+    <option value="${item}">${item}</option>
+    `;
+    select.append(optionHtml);
+  });
+}
+
+
+function filterArray(array, key) {
+  const filteredArray = array.filter(item =>{
+    if(item.type == key) {
+      return item;
+    }
+  });
+  return filteredArray;
+}
+
+
 
 $(init);
